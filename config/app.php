@@ -1,5 +1,8 @@
 <?php
 
+use Aykts\Marketplace\Facades\Trendyol;
+use Aykts\Marketplace\Facades\TrendyolFacade;
+
 return [
 
     /*
@@ -177,6 +180,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Aykts\Marketplace\Providers\MarketplaceServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -239,6 +243,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Trendyol' => Trendyol::class,
 
     ],
 

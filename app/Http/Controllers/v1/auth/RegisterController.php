@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1\auth;
 
+use App\Events\v1\auth\RegisterEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\Auth\RegisterRequest;
 use App\Http\Resources\v1\auth\UserRegisterResource;
@@ -37,6 +38,8 @@ class RegisterController extends Controller
             $user["token"] = $this->getTokenAndRefreshToken(
                 $request->only('email', 'password')
             );
+
+            event(new RegisterEvent($user));
 
             $return_data = $this->ok(__('register.succeeded'), new UserRegisterResource($user));
 

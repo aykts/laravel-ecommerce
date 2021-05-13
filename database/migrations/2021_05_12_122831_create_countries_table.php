@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStoresTable extends Migration
+class CreateCountriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,20 @@ class CreateStoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('stores', function (Blueprint $table) {
-            $table->id()->unsigned();
-            $table->string('email', 100)->nullable();
-            $table->string('password');
-            $table->string('fullname', 50)->nullable();
-            $table->string('url', 100)->nullable();
+        Schema::create('countries', function (Blueprint $table) {
+            $table->id();
+            $table->string('lang', 50)->nullable();
+            $table->unsignedBigInteger('store_id');
+            $table->string('name', 100);
+            $table->string('iso_code', 2);
+            $table->string('iso_code_3', 3);
             $table->boolean('status')->default(true);
+
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
+
+            $table->foreign('store_id')->references('id')->on('stores')
+                ->onDelete('cascade');
         });
     }
 
@@ -32,6 +37,6 @@ class CreateStoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('stores');
+        Schema::dropIfExists('countries');
     }
 }

@@ -39,6 +39,27 @@ Route::prefix('catalogs')->group(function () {
     Route::post('/', 'catalog\CatalogController@store')->name('catalog.store');
 });
 
+// Products Routes
+Route::prefix('products')->group(function () {
+
+    Route::get('/', 'product\ProductController@index')->name('product.index');
+
+});
+
+// Integration Routes
+Route::prefix('integration')->group(function () {
+
+    Route::prefix('trendyol')->group(function () {
+
+        Route::get('/', 'integration\TrendyolController@index')->name('trendyol.index');
+
+        Route::get('/stokPriceUpdate', 'integration\TrendyolController@updateStockPrice')->name('trendyol.updateStockPrice');
+        Route::get('/getBatchRequestResult/{batchRequestId}', 'integration\TrendyolController@getBatchRequestResult')->name('trendyol.getBatchRequestResult');
+
+    });
+
+});
+
 Route::middleware('auth:api')->group(function () {
 
     Route::prefix('auth')->group(function () {

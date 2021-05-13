@@ -61,8 +61,8 @@ class Handler extends ExceptionHandler
         }
 
         if (!empty($exception) && config('app.debug'))
-            return $this->apiException($exception);
+            return $this->apiException($exception, $request);
 
-        return response()->json($exception, 500);
+        return $this->fail(__('error.global'), $request->all(), JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

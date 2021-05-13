@@ -1,0 +1,26 @@
+{
+    "name": "Aykts/Marketplace",
+    "authors": [
+        {
+            "name": "Aykut ŞİMŞEK",
+            "email": "aykut.simsekk@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Aykts\\Marketplace\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Aykts\\Marketplace\\Providers\\MarketplaceServiceProvider"
+            ],
+            "aliases": {
+                "Trendyol": "Aykts\\Marketplace\\Facades"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {}
+}

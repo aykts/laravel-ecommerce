@@ -7,11 +7,10 @@ use App\Enums\v1\GlobalEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\catalog\CatalogCreateRequest;
 use App\Http\Resources\v1\catalog\CatalogResource;
-use App\Models\Catalog;
-use Exception;
-use Illuminate\Database\QueryException;
+use App\Models\v1\Catalog\Catalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CatalogController extends Controller
 {
@@ -39,40 +38,30 @@ class CatalogController extends Controller
      */
     public function store(CatalogCreateRequest $request): JsonResponse
     {
+        DB::beginTransaction();
 
         $request_form = $request->input();
 
-        try {
+        $catalog_data = [
+            'store_id' => $request->get('StoreId') ?? '',
+            'catalog_name' => $request->input('catalog_name'),
+            'top_id' => $request->input('top_id'),
+            'order' => $request->input('order'),
+            'status' => $request->input('status') ?? CatalogEnums::Active,
+            'lang' => $request->input('lang') ?? CatalogEnums::DefaultLanguage
+        ];
 
-            $catalog_data = [
-                'store_id' => $request->input('store_id'),
-                'catalog_name' => $request->input('catalog_name'),
-                'top_id' => $request->input('top_id'),
-                'order' => $request->input('order'),
-                'status' => $request->input('status') ?? CatalogEnums::Active,
-                'lang' => $request->input('lang') ?? CatalogEnums::DefaultLanguage
-            ];
+        $add_catalog = Catalog::create($catalog_data);
 
-            $add_catalog = Catalog::create($catalog_data);
-
-            if (!empty($add_catalog)) {
-                $return_data = $this->ok(__('global.process_success'), $request_form);
-            } else {
-                $return_data = $this->fail(__('global.process_failed'), $request_form);
-            }
-
-        } catch (QueryException $exception) {
-
-            $return_data = $this->fail($exception->errorInfo, $request_form);
-
-        } catch (Exception $exception) {
-
-            $return_data = $this->fail($exception->getMessage(), $request_form);
-
+        if (!empty($add_catalog)) {
+            DB::commit();
+            $return_data = $this->ok(__('global.process_success'), $request_form);
+        } else {
+            DB::rollback();
+            $return_data = $this->fail(__('global.process_failed'), $request_form);
         }
 
         return $return_data;
-
     }
 
     /**

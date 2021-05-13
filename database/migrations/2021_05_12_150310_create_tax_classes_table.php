@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCatalogsTable extends Migration
+class CreateTaxClassesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateCatalogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalogs', function (Blueprint $table) {
+        Schema::create('tax_classes', function (Blueprint $table) {
             $table->id();
             $table->string('lang', 50)->nullable();
+            $table->unsignedBigInteger('country_id')->nullable();
             $table->unsignedBigInteger('store_id');
-            $table->string('catalog_name', 250);
-            $table->integer('top_id')->default(0);
-            $table->tinyInteger('order')->default(1);
+            $table->string('title', 50);
+            $table->string('description', 100);
             $table->boolean('status')->default(true);
 
             $table->timestamp('created_at')->useCurrent();
@@ -27,6 +27,8 @@ class CreateCatalogsTable extends Migration
 
             $table->foreign('store_id')->references('id')->on('stores')
                 ->onDelete('cascade');
+            $table->foreign('country_id')->references('id')->on('countries')
+                ->onDelete('set null');
         });
     }
 
@@ -37,6 +39,6 @@ class CreateCatalogsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catalogs');
+        Schema::dropIfExists('tax_classes');
     }
 }

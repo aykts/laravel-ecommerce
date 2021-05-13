@@ -16,31 +16,30 @@ use Illuminate\Validation\ValidationException;
 
 trait TraitException
 {
-
     use TraitApiResponser;
 
-    public function apiException($e)
+    public function apiException($e, $request)
     {
         if ($this->isModel($e)) {
 
-            return $this->fail('404 Not Found (' . $e->getModel() . ')', [], JsonResponse::HTTP_NOT_FOUND);
+            return $this->fail('404 Not Found (' . $e->getModel() . ')', $request->all(), JsonResponse::HTTP_NOT_FOUND);
 
         } elseif ($this->RouteNotFound($e)) {
 
-            return $this->fail($e->getMessage(), [], JsonResponse::HTTP_UNAUTHORIZED);
+            return $this->fail($e->getMessage(), $request->all(), JsonResponse::HTTP_UNAUTHORIZED);
 
         } elseif ($this->isValidate($e)) {
 
-            return $this->fail($e->validator->getData(), [], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->fail($e->validator->getData(), $request->all(), JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 
         } elseif ($this->isQuery($e)) {
 
             $errorMessage = ($e->errorInfo == null) ? $e->getMessage() : end($e->errorInfo);
-            return $this->fail($errorMessage, $e->validator->getData(), JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->fail($errorMessage, $request->all(), JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 
         } else {
 
-            return $this->fail($e->getMessage());
+            return $this->fail($e->getMessage(), $request->all());
 
         }
 
