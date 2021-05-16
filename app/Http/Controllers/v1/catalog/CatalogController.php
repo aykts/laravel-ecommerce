@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\v1\catalog;
 
-use App\Enums\v1\catalog\CatalogEnums;
 use App\Enums\v1\GlobalEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\catalog\CatalogCreateRequest;
 use App\Http\Resources\v1\catalog\CatalogResource;
 use App\Models\v1\Catalog\Catalog;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +23,7 @@ class CatalogController extends Controller
     {
         $catalog_lists = Catalog::paginate(GlobalEnum::PerPage);
 
-        if (!is_null($catalog_lists)) {
+        if ($catalog_lists->total()) {
             return $this->ok('', CatalogResource::collection($catalog_lists)->response()->getData(true));
         }
 
@@ -34,31 +34,27 @@ class CatalogController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CatalogCreateRequest $request
+     * @param Catalog $catalog
      * @return JsonResponse
      */
-    public function store(CatalogCreateRequest $request): JsonResponse
+    public function store(CatalogCreateRequest $request, Catalog $catalog): JsonResponse
     {
         DB::beginTransaction();
 
-        $request_form = $request->input();
+        try {
 
-        $catalog_data = [
-            'store_id' => $request->get('StoreId') ?? '',
-            'catalog_name' => $request->input('catalog_name'),
-            'top_id' => $request->input('top_id'),
-            'order' => $request->input('order'),
-            'status' => $request->input('status') ?? CatalogEnums::Active,
-            'lang' => $request->input('lang') ?? CatalogEnums::DefaultLanguage
-        ];
+            $catalog->create($request->validated());
 
-        $add_catalog = Catalog::create($catalog_data);
-
-        if (!empty($add_catalog)) {
             DB::commit();
-            $return_data = $this->ok(__('global.process_success'), $request_form);
-        } else {
+
+            $return_data = $this->ok(__('global.process_success'), $request->input());
+
+        } catch (Exception $ex) {
+
             DB::rollback();
-            $return_data = $this->fail(__('global.process_failed'), $request_form);
+
+            $return_data = $this->fail(__('global.process_failed'), $request->input());
+
         }
 
         return $return_data;
@@ -85,7 +81,7 @@ class CatalogController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function edit($id)
     {
@@ -97,7 +93,7 @@ class CatalogController extends Controller
      *
      * @param  \Illuminate\Http\Request $request
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function update(Request $request, $id)
     {
@@ -108,7 +104,7 @@ class CatalogController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return void
      */
     public function destroy($id)
     {

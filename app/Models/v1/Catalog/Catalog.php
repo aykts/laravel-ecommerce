@@ -2,18 +2,17 @@
 
 namespace App\Models\v1\Catalog;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 /**
- * @method find($id)
- * @method create(array $store)
- * @method where(array $clause)
  * @property mixed catalog_name
  * @property mixed id
  * @property mixed lang
+ * @method static paginate(string $PerPage)
+ * @method create(array $validated)
  */
-class Catalog extends Model
+class Catalog extends BaseModel
 {
     use HasFactory;
 

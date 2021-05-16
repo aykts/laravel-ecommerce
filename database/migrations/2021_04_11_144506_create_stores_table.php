@@ -19,6 +19,7 @@ class CreateStoresTable extends Migration
             $table->string('password');
             $table->string('fullname', 50)->nullable();
             $table->string('url', 100)->nullable();
+            $table->tinyInteger('default_store')->default(0);
             $table->boolean('status')->default(true);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

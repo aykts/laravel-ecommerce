@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Listeners\v1\auth\SendRegisterNotification;
 use App\Models\v1\Catalog\Catalog;
 use App\Observers\v1\Catalog\CatalogObserve;
 use Illuminate\Auth\Events\Registered;
@@ -19,7 +18,6 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
-            SendRegisterNotification::class,
         ],
     ];
 

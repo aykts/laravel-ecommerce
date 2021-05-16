@@ -7,6 +7,9 @@ use App\Models\v1\Catalog\CatalogDetail;
 
 class CatalogObserve
 {
+    
+    public $afterCommit = true;
+
     /**
      * Handle the Catalog "created" event.
      *
